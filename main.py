@@ -31,27 +31,28 @@ else:
     print("Please type in a number.")
     exit() 
 
-# Need a deep copy of the current porfolio list of objects to use for comparison later.
+# Create deep copy of the current porfolio list of objects to manipulate and use for comparison later
 desired_portfolio = copy.deepcopy(current_portfolio)
 
 print("Just to confirm your input, your portfolio looks like this: ")
+print("\n")
 
 for i in range(int(num_loops)):
     print(f"You have {current_portfolio[i].shares} shares of {current_portfolio[i].ticker} currently trading at ${current_portfolio[i].price} per share.")
     value += current_portfolio[i].value
-    print("\n")
 
+# Total current portfolio value
 value = round(value, 2)
 
 print(f"Your total portfolio is valued at ${value}.")
-
+print("\n")
 response = input("Is this correct? yes or no? >> ")
 response = response.lower()
 print("\n")
 
 if (response == 'y' or response == 'yes'):
     
-    for i in range(int(num_loops)):
+    for i in range(len(desired_portfolio)):
 
         percent = round((current_portfolio[i].value / value) * 100, 2)
         print(f"{current_portfolio[i].ticker} represents {percent}% of your portfolio")
@@ -61,25 +62,21 @@ if (response == 'y' or response == 'yes'):
         desired_allocation = round(desired_allocation / 100, 2)
 
         desired_portfolio[i].value = round(desired_allocation * value, 2)
-        print("More debugging >>>")
-        print(f">>> Let's check the comparison between desired and current. Desired Investment:  {desired_portfolio[i].ticker} {desired_portfolio[i].value}")
-        print(f">>> Let's check the comparison between desired and current. Desired Investment:  {current_portfolio[i].ticker} {current_portfolio[i].value}")
-        print("<<<")
-        if desired_portfolio[i].value > current_portfolio[i].value:
-            print(f">>> NUM SHARES {desired_portfolio[i].value / current_portfolio[i].value}")  # <<< THIS IS THE PROBLEM MATH. FIGURE THIS SHIT OUT 
-            num_shares = desired_portfolio[i].value / value   # 0.49999999
-            num_shares = math.floor(num_shares)   # NEED TO ADJUST THE NUM SHARES FROM THE CURRENT NUM SHARES BEFORE WE SIMPLY ADD 
+
+        if desired_portfolio[i].value > current_portfolio[i].value: # If the desired investment value is larger than what you currently have, you need to buy more shares
+            num_shares = (desired_portfolio[i].value - current_portfolio[i].value) / current_portfolio[i].price   
+            num_shares = math.floor(num_shares)  
             desired_portfolio[i].shares += num_shares
             desired_portfolio[i].shares = math.floor(desired_portfolio[i].shares)
             print(f"You need to buy {num_shares} shares of {current_portfolio[i].ticker}.")
             print("\n")
 
-        elif desired_portfolio[i].value == 0:
+        elif desired_portfolio[i].value == 0: # Liquidate the holdings
             desired_portfolio[i].shares = 0
             print(f"You need to sell all of {current_portfolio[i].ticker}.")
 
-        elif desired_portfolio[i].value < current_portfolio[i].value:
-            num_shares = desired_portfolio[i].value / value
+        elif desired_portfolio[i].value < current_portfolio[i].value: # If the desired investment value is smaller than what you currently have, you need to sell shares
+            num_shares = (current_portfolio[i].value - desired_portfolio[i].value) / current_portfolio[i].price   
             num_shares = math.floor(num_shares)
             desired_portfolio[i].shares -= num_shares
             desired_portfolio[i].shares = math.floor(desired_portfolio[i].shares)
@@ -95,6 +92,22 @@ elif (response == 'n' or response == 'no'):
 else:
     print("Invalid entry")
     exit()
+
+# Calculate the value of the new portfolio to be used in comparison to the old
+desired_value = 0
+for i in range(len(desired_portfolio)):
+    desired_value += desired_portfolio[i].value
+
+desired_value = round(desired_value,2)
+slippage = round(value - desired_value, 2)
+
+print("\n")
+
+# Want to display a check to make sure the user didn't misallocate funds.
+print("Let's make sure your new rebalanced portfolio value didn't change significantly from it's previous value.")
+print(f"Your old portfolio value was ${value}. Your rebalanced portfolio is ${desired_value}. These two values should be the same. If not, make sure your desired allocation percentages total 100%.")
+print(f"Due to rounding, ${slippage} was not reallocated. We want this number to be as low as possible, preferably $0.")
+print("\n")
 
 print("To sum it all up, your rebalanced portfolio should have:")
 for i in range(len(desired_portfolio)):

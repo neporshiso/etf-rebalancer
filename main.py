@@ -15,10 +15,10 @@ class Investment:
 current_portfolio = []
 value = 0
 
-# Determines how many times we will loop through the portfolio. Only need to loop as much as the portfolio is.
+# Determines how many times we will loop through the portfolio.
 num_loops = input("How many investments are in your total portfolio? >> ")
 
-if(num_loops.isdigit() and int(num_loops) < 10): # check to see if user input is a number and that number is less than 10
+if(num_loops.isdigit() and int(num_loops) <= 15): # check to see if user input is a number and that number is less than 15
     for i in range(int(num_loops)):
         ticker = input("Enter Ticker >> ")
         price = float(input("Enter Price >> "))
@@ -28,7 +28,7 @@ if(num_loops.isdigit() and int(num_loops) < 10): # check to see if user input is
         current_portfolio.append(i)
 
 else:
-    print("Please type in a number.")
+    print("Please type in a valid number.")
     exit() 
 
 # Create deep copy of the current porfolio list of objects to manipulate and use for comparison later
@@ -37,6 +37,7 @@ desired_portfolio = copy.deepcopy(current_portfolio)
 print("Just to confirm your input, your portfolio looks like this: ")
 print("\n")
 
+# Look through all investments and calculate current portfolio value
 for i in range(int(num_loops)):
     print(f"You have {current_portfolio[i].shares} shares of {current_portfolio[i].ticker} currently trading at ${current_portfolio[i].price} per share.")
     value += current_portfolio[i].value
@@ -84,7 +85,7 @@ if (response == 'y' or response == 'yes'):
             print("\n")
         
         else:
-            print("No Change on this security.")
+            print("No change on this security.")
 
 elif (response == 'n' or response == 'no'):
     exit()
@@ -93,20 +94,28 @@ else:
     print("Invalid entry")
     exit()
 
-# Calculate the value of the new portfolio to be used in comparison to the old
+# Calculate the value of the rebalanced portfolio 
 desired_value = 0
 for i in range(len(desired_portfolio)):
     desired_value += desired_portfolio[i].value
 
 desired_value = round(desired_value,2)
+
+# defining slippage as the dollar value of value not reallocated. Simple comparison between old value and new value. Want this to be minimal.
 slippage = round(value - desired_value, 2)
 
 print("\n")
 
 # Want to display a check to make sure the user didn't misallocate funds.
-print("Let's make sure your new rebalanced portfolio value didn't change significantly from it's previous value.")
-print(f"Your old portfolio value was ${value}. Your rebalanced portfolio is ${desired_value}. These two values should be the same. If not, make sure your desired allocation percentages total 100%.")
-print(f"Due to rounding, ${slippage} was not reallocated. We want this number to be as low as possible, preferably $0.")
+print("Let's compare the rebalanced portfolio value to its previous value.")
+
+print(f'''Your old portfolio value was ${value}. 
+Your rebalanced portfolio is ${desired_value}. 
+These two values should be the same. 
+If not, make sure your desired allocation percentages total 100%.
+Due to rounding, ${slippage} was not reallocated. 
+We want this number to be as low as possible, preferably $0.''')
+
 print("\n")
 
 print("To sum it all up, your rebalanced portfolio should have:")

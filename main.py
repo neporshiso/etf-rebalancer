@@ -37,7 +37,6 @@ if(num_loops.isdigit() and int(num_loops) <= 15):
             print(f"{ticker} Current Price >> ${price} ")
             
         except:
-            print("Can't read the investment.")
             print("I can't find the price for that investment. ")
             price = round(float(input("Go ahead and enter it manually. >> ")), 2)
 

@@ -2,10 +2,6 @@ from sys import exit
 import copy
 import math
 from yahoo_fin.stock_info import get_live_price
-from timeit import default_timer as timer
-
-# TODO: all price variables need 2 decimals
-# TODO: Need to figure out a way to raise an exception after certain amount of time has passed
 
 # Base class for all investments
 class Investment:
@@ -31,13 +27,9 @@ if(num_loops.isdigit() and int(num_loops) <= 15):
 
         try:
             print("Fetching price data...")
-            # ! Remove timer code prior to pushing to gh
-            start = timer()
             price = round(get_live_price(ticker), 2)
             if price:
                 pass
-                end = timer()
-                print(end - start)
             else:
                 raise Exception
 
@@ -67,13 +59,13 @@ print("\n")
 # Look through all investments and calculate current portfolio value
 for i in range(int(num_loops)):
     print(
-        f"You have {current_portfolio[i].shares} shares of {current_portfolio[i].ticker} currently trading at ${current_portfolio[i].price} per share.")
+        f"You have {current_portfolio[i].shares:.0f} shares of {current_portfolio[i].ticker} currently trading at ${current_portfolio[i].price:.2f} per share.")
     value += current_portfolio[i].value
 
 # Total current portfolio value
 value = round(value, 2)
 
-print(f"Your total portfolio is valued at ${value}.")
+print(f"Your total portfolio is valued at ${value:.2f}.")
 print("\n")
 response = input("Is this correct? yes or no? >> ")
 response = response.lower()
@@ -147,11 +139,11 @@ print("\n")
 # Want to display a check to make sure the user didn't misallocate funds.
 print("Let's compare the rebalanced portfolio value to its previous value.")
 
-print(f'''Your old portfolio value was ${value}. 
-Your rebalanced portfolio is ${desired_value}. 
+print(f'''Your old portfolio value was ${value:.2f}. 
+Your rebalanced portfolio is ${desired_value:.2f}. 
 These two values should be the same. 
 If not, make sure your desired allocation percentages total 100%.
-Due to rounding, ${slippage} was not reallocated. 
+Due to rounding, ${slippage:.2f} was not reallocated. 
 We want this number to be as low as possible, preferably $0.''')
 
 print("\n")
@@ -159,4 +151,4 @@ print("\n")
 print("To sum it all up, your rebalanced portfolio should have:")
 for i in range(len(desired_portfolio)):
     print(
-        f"{desired_portfolio[i].shares} shares of {desired_portfolio[i].ticker}")
+        f"{desired_portfolio[i].shares} shares of {desired_portfolio[i].ticker}.")

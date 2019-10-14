@@ -15,3 +15,6 @@ You could tell the system at my old plan that you want to reallocate yourt portf
 The purpose of my script is that in my Vanguard portfolio, there is no similar system in place to make it easy for someone to rebalance their account. 
 
 The way the script works is you tell the program how many investments are in the portfolio you'd like to rebalance. You then tell it what your desired allocation to those funds are and it then calculates what trades you need to make to reach your desired portfolio.
+
+
+http://theautomatic.net/yahoo_fin-documentation/
